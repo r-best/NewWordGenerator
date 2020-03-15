@@ -90,13 +90,12 @@ def generate(P, symbols, N=2):
     """Takes in the probability distribution obtained from
     build_model and creates a new word from it
     """
-    new_word = ""
+    new_word = list()
 
     # Put N "<start>" tags at start of new word to
     # make indices work out properly
     for i in range(N-1):
-        new_word = new_word + "<start>"
-        if i < N-2: new_word = new_word + " "
+        new_word.append("<start>")
     
     # Pull new tokens from the probability distribution
     # randomly until you get an "<end>" token
@@ -105,7 +104,7 @@ def generate(P, symbols, N=2):
         counter = 0
 
         # Get last (N-1) symbols in word
-        lastN1Symbols = " ".join(new_word.split()[-(N-1):])
+        lastN1Symbols = " ".join(new_word[-(N-1):])
         
         for i in range(len(symbols)):
             # Skip this symbol if it doesn't exist or has probability 0
@@ -117,9 +116,9 @@ def generate(P, symbols, N=2):
             # and use the one that makes the sum cross the random number
             counter += P[lastN1Symbols][symbols[i]]
             if counter > rand:
-                new_word += " " + symbols[i]
+                new_word.append(symbols[i])
                 break
-    return new_word
+    return "".join(new_word[1:-1])
 
 
 if __name__ == "__main__":
