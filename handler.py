@@ -4,6 +4,7 @@ import random
 
 import load_model
 import utils
+import polly
 from dictionaries import DICTIONARIES
 
 
@@ -24,13 +25,20 @@ def handler(event, context):
     P, symbols = load_model.load_model(model, N)
 
     new_words = list()
+    mp3s = list()
     for i in range(M):
-        new_words.append(generate(P, symbols, N=N))
+        new_word = generate(P, symbols, N=N)
+        new_words.append(new_word)
+        mp3 = polly.getMP3(new_word)
+        if mp3 == -1:
+            mp3 = "Error producing mp3 file"
+        mp3s.append(mp3)
 
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "words": new_words
+            "words": new_words,
+            "mp3_files": mp3s
         }, ensure_ascii=False)
     }
 
